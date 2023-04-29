@@ -22,7 +22,7 @@ def main():
     reddit = ScrapeReddit()
     scrapedData += reddit.scrapeData()
 
-
+    driver.quit()
     # Problem recognition
     analyzeProblem = ProblemRecognition()
     analyzedPosts = analyzeProblem.interpretPolarityScores(scrapedData)
