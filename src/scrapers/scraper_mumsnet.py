@@ -23,7 +23,7 @@ class ScrapeMumsnet(Scraper):
         headlinesText = []
         headlines = main.find_elements(By.CSS_SELECTOR, '[data-click-id*="topic-thread-"]')
         for headline in headlines:
-            headlinesText.append(headline.text) 
+            headlinesText.append(dict(headline=headline.text, url = headline.href, category = 'parenting')) 
         return headlinesText
     
     def scrapeData(self):
