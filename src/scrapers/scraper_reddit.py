@@ -1,5 +1,5 @@
-import matplotlib.pyplot as plt
-import seaborn as sns
+from dotenv import load_dotenv
+import os
 
 import praw
 
@@ -8,9 +8,12 @@ class ScrapeReddit:
         self.user_agent = 'Scraper 1.0 by /u/Content-Crew1246'
         self.reddit = praw.Reddit(
             client_id='3TTUd3_fSgbGLu5y5NjeVg',
-            client_secret='jcyZ7b4sV8l0uNnmlELzUfArUD1Mgg',
+            client_secret=os.getenv('client_secret_reddit'),
             user_agent=self.user_agent
         )
+
+    def configure():
+        load_dotenv()
 
     def scrapeData(self):
         posts = list()

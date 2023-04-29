@@ -3,29 +3,31 @@ from selenium import webdriver
 from scrapers.scraper_mumsnet import ScrapeMumsnet
 from scrapers.scraper_reddit import ScrapeReddit
 from sentiment import ProblemRecognition
-PATH = "C:\Program Files (x86)\chromedriver.exe"
+from db_connect import DataBaseConnect
 
-options = webdriver.ChromeOptions()
-options.add_argument('--ignore-certificate-errors')
-options.add_argument('--ignore-ssl-errors')
-driver = webdriver.Chrome(PATH, options=options)
+def setUpDriver():
+    PATH = "C:\Program Files (x86)\chromedriver.exe"
+    options = webdriver.ChromeOptions()
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument('--ignore-ssl-errors')
+    driver = webdriver.Chrome(PATH, options=options)
+    return driver
 
-# username : tomaszsorobka
+def main():
+    driver = setUpDriver()
+    mumsnet = ScrapeMumsnet(driver)
+    scrapedData = mumsnet.scrapeData()
 
-# Mumsnet
-mumsnet = ScrapeMumsnet(driver)
-scrapedData = mumsnet.scrapeData()
-
-# Reddit
-reddit = ScrapeReddit()
-scrapedData += reddit.scrapeData()
-
-
-# Problem recognition
-analyzeProblem = ProblemRecognition()
-analyzedPosts = analyzeProblem.interpretPolarityScores(scrapedData)
+    # Reddit
+    reddit = ScrapeReddit()
+    scrapedData += reddit.scrapeData()
 
 
+    # Problem recognition
+    analyzeProblem = ProblemRecognition()
+    analyzedPosts = analyzeProblem.interpretPolarityScores(scrapedData)
+
+main()
 
 # to csv/db
 #df_results = pd.DataFrame.from_records(analyzedPosts)
