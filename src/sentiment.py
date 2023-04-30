@@ -18,17 +18,20 @@ class ProblemRecognition:
         return posts
 
     def interpretPolarityScores(self, posts):
-        interpretedPosts = self.getPolarityScores(posts)
-        for post in interpretedPosts:
+        polaredPosts = self.getPolarityScores(posts)
+        for post in polaredPosts:
             if post['compound'] > 0.2:
                 post['label'] = 1
             elif post['compound'] < -0.2:
                 post['label'] = -1
             else:
                 post['label'] = 0
-        return interpretedPosts
+        return polaredPosts
     
-
+    def getNegativePosts(self, posts):
+        interpretedPosts = self.interpretPolarityScores(posts)
+        negativePosts = [post for post in interpretedPosts if post['label'] == -1]
+        return negativePosts
 # a = ProblemRecognition()
 # print(a.getPolarityScores([{"headline": "wtf is that", "url": "lobocoobo"}]))
 

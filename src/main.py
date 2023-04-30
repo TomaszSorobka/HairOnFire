@@ -15,17 +15,29 @@ def setUpDriver():
 
 def main():
     driver = setUpDriver()
-    mumsnet = ScrapeMumsnet(driver)
-    scrapedData = mumsnet.scrapeData()
+    database = DataBaseConnect()
+    scrapedData = []
 
-    # Reddit
     reddit = ScrapeReddit()
     scrapedData += reddit.scrapeData()
+
+
+    mumsnet = ScrapeMumsnet(driver)
+    scrapedData += mumsnet.scrapeData()
+
+    # Reddit
+    
 
     driver.quit()
     # Problem recognition
     analyzeProblem = ProblemRecognition()
-    analyzedPosts = analyzeProblem.interpretPolarityScores(scrapedData)
+    analyzedPosts = analyzeProblem.getNegativePosts(scrapedData)
+
+    print(analyzedPosts)
+    for post in analyzedPosts:
+        if not database.isPostAlreadyInDb(post['headline']):
+            database.insertPost(post)
+
 
 main()
 

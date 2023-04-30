@@ -35,8 +35,14 @@ class DataBaseConnect:
         except Exception as e:
             print("Could not insert row into database: ", e)
 
-d = DataBaseConnect()
-d.insertPost(dict(slogan = 'hwdp'))
+    def isPostAlreadyInDb(self, dataHeadline):
+        try:
+            if self.collection.find({'headline':dataHeadline}).count() > 0:
+                return True
+            return False
+        except Exception as e:
+            print("Could not check post existance: ", e)
+
     
 
 
