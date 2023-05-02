@@ -20,24 +20,25 @@ def main():
 
     reddit = ScrapeReddit()
     scrapedData += reddit.scrapeData()
-
+    print('scraped reddit')
+    print('number of posts from reddit:',len(scrapedData))
 
     mumsnet = ScrapeMumsnet(driver)
-    scrapedData += mumsnet.scrapeData()
-
-    # Reddit
-    
+    scrapedData += mumsnet.scrapeData()    
+    print('scraped mumsnet')
 
     driver.quit()
     # Problem recognition
     analyzeProblem = ProblemRecognition()
     analyzedPosts = analyzeProblem.getNegativePosts(scrapedData)
+    print('problems extracted, identified: ', len(analyzedPosts), ' problems')
 
-    print(analyzedPosts)
+    insertCount = 0
     for post in analyzedPosts:
         if not database.isPostAlreadyInDb(post['headline']):
             database.insertPost(post)
-
+            insertCount +=1
+    print('posts inserted, inserted: ', insertCount, ' posts')
 
 main()
 

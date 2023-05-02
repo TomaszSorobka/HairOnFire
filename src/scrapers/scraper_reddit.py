@@ -16,13 +16,13 @@ class ScrapeReddit:
     def configure(self):
         load_dotenv()
 
-    def scrapeData(self, database):
+    def scrapeData(self):
         posts = list()
-        #hot new rising top
-        for submission in self.reddit.subreddit('lifehacks').hot(limit=20):
+        #hot new rising top lifehacks
+        for submission in self.reddit.subreddit('Entrepreneur').hot(limit=100):
             # if database.isPostAlreadyInDb(submission.title):
             #     break
-            posts.append(dict(headline =submission.title, url = submission.url, category = 'lifehacks'))
+            posts.append(dict(headline =submission.title, url = submission.url, category = 'entrepreneurship'))
         return posts
 
 #hot new rising top

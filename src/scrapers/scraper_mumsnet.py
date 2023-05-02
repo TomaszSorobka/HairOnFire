@@ -23,13 +23,13 @@ class ScrapeMumsnet(Scraper):
         headlinesText = []
         headlines = main.find_elements(By.CSS_SELECTOR, '[data-click-id*="topic-thread-"]')
         for headline in headlines:
-            headlinesText.append(dict(headline=headline.text, url = headline.get_attribute('href'), category = 'parenting')) 
+            headlinesText.append(dict(headline=headline.text, url = headline.get_attribute('href'), category = 'education')) 
         return headlinesText
     
     def scrapeData(self):
-        link = 'https://www.mumsnet.com/talk/extra_curricular_activities?order-by=newest&page='
+        link = 'https://www.mumsnet.com/talk/education?order-by=newest&page='#'https://www.mumsnet.com/talk/extra_curricular_activities?order-by=newest&page='
         allHeadlines = []
-        for i in range(1,3):
+        for i in range(1,5):
             self.driver.get(link + str(i))
             allHeadlines += self.getHeadlines()
         return allHeadlines
