@@ -25,7 +25,7 @@ class DataBaseConnect:
         # Send a ping to confirm a successful connection
         try:
             self.client.admin.command('ping')
-            print("Pinged your deployment. Connection to MongoDB established successfully!")
+            print("Pinged database. Connection to MongoDB established successfully!")
         except Exception as e:
             print(e)
 

@@ -1,9 +1,11 @@
 from selenium import webdriver
-
+import random
 from scrapers.scraper_mumsnet import ScrapeMumsnet
 from scrapers.scraper_reddit import ScrapeReddit
+from scrapers.scraper_discusscooking import ScrapeDiscussCooking
 from sentiment import ProblemRecognition
 from db_connect import DataBaseConnect
+import time
 
 def setUpDriver():
     PATH = "C:\Program Files (x86)\chromedriver.exe"
@@ -14,40 +16,42 @@ def setUpDriver():
     return driver
 
 def main():
+    start = time.time()
     driver = setUpDriver()
     database = DataBaseConnect()
     scrapedData = []
 
-    reddit = ScrapeReddit()
-    scrapedData += reddit.scrapeData()
-    print('scraped reddit')
-    print('number of posts from reddit:',len(scrapedData))
+    try:
+        reddit = ScrapeReddit()
+        scrapedData += reddit.scrapeData()
 
-    mumsnet = ScrapeMumsnet(driver)
-    scrapedData += mumsnet.scrapeData()    
-    print('scraped mumsnet')
+        mumsnet = ScrapeMumsnet(driver)
+        scrapedData += mumsnet.scrapeData()    
 
-    driver.quit()
-    # Problem recognition
-    analyzeProblem = ProblemRecognition()
-    analyzedPosts = analyzeProblem.getNegativePosts(scrapedData)
-    print('problems extracted, identified: ', len(analyzedPosts), ' problems')
+        discusscooking = ScrapeDiscussCooking(driver)
+        scrapedData += discusscooking.scrapeData()  
 
+        print('Scraping finished! Initializing problem recognition...')
+        driver.quit()
+        # Problem recognition
+        analyzeProblem = ProblemRecognition()
+        analyzedPosts = analyzeProblem.getNegativePosts(scrapedData)
+    except Exception as e:
+        print('Something went wrong: ', e)
+        if input('Would you like me to continue? Type y or n: ') == 'n':
+            driver.quit()
+            print('Indicated no continuation. Closing...')
+            return
+
+    random.shuffle(analyzedPosts)
     insertCount = 0
+    print('Inserting negative posts to the database...')
     for post in analyzedPosts:
         if not database.isPostAlreadyInDb(post['headline']):
             database.insertPost(post)
             insertCount +=1
-    print('posts inserted, inserted: ', insertCount, ' posts')
+    print('Posts inserted successfully! Closing...')
+    end = time.time()
+    print('Time: ', end-start)
 
 main()
-
-# to csv/db
-#df_results = pd.DataFrame.from_records(analyzedPosts)
-
-# df = pd.DataFrame(posts)
-# print(df)
-# df.to_csv('posts.csv', encoding= 'utf-8', index = False)
-#print(type(scrapedData))
-#for i in scrapedData:
- #   print(i)
