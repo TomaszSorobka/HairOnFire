@@ -59,10 +59,10 @@ def main():
     random.shuffle(analyzedPosts)
     insertCount = 0
     print('Inserting negative posts to the database...')
-    # for post in analyzedPosts:
-    #     if not database.isPostAlreadyInDb(post['headline']):
-    #         database.insertPost(post)
-    #         insertCount +=1
+    for post in analyzedPosts:
+        if not database.isPostAlreadyInDb(post['headline']):
+            database.insertPost(post)
+            insertCount +=1
     # Print success message with total number of inserted posts and elapsed time
     print('Posts inserted successfully! Closing...')
     end = time.time()
